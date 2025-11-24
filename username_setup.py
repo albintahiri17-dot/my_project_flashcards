@@ -1,42 +1,77 @@
-# username_setup.py
-import json
 
-# Datei, in der Benutzerdaten gespeichert werden
-DATA_FILE = "leaderboard.json"
+import json
+from results_leaderboard import load_leaderboard, save_leaderboard
 
 
 def prompt_username():
     """Fragt den Benutzer nach einem Benutzernamen."""
-    username = input("Bitte gib deinen Benutzernamen ein: ").strip()
-    return username
-
-
-def is_username_taken(usernames, username):
-    """Prüft, ob ein Benutzername bereits existiert."""
-    while True:
-        name_exists = False
-
-        for name in usernames:
-            if name == username:
-                name_exists = True
-                break
-
-        if not name_exists:
-            return username  # Name ist frei
-
-        print("❗ Dieser Benutzername ist bereits vergeben. Bitte gib einen anderen ein.")
-        username = input("Bitte neuen Benutzernamen eingeben: ").strip()
+    username = input(
+        "Bitte gib deinen Benutzernamen ein.\n"
+        "Er sollte aus Buchstaben und mindestens einer Ziffer bestehen\n"
+        "und mindestens 5 Zeichen lang sein: "
+    )
+    return username.strip()
 
 
 def validate_username(username):
-    """Überprüft, ob der eingegebene Benutzername gültig ist."""
+    """
+    Prüft, ob der Benutzername die grundlegenden Regeln erfüllt:
+    - nicht leer
+    - keine Leerzeichen
+    - mindestens 5 Zeichen
+    - mindestens ein Buchstabe und mindestens eine Ziffer
+    """
     if username == "":
-        print("⚠️ Benutzername darf nicht leer sein.")
+        print("⚠️  Benutzername darf nicht leer sein.")
         return False
+
+    if " " in username:
+        print("⚠️  Benutzername darf keine Leerzeichen enthalten.")
+        return False
+
+    if len(username) < 5:
+        print("⚠️  Benutzername muss mindestens 5 Zeichen lang sein.")
+        return False
+
+    has_letter = False
+    has_digit = False
+    for ch in username:
+        if ch.isalpha():
+            has_letter = True
+        if ch.isdigit():
+            has_digit = True
+
+    if not has_letter or not has_digit:
+        print(
+            "⚠️  Benutzername muss mindestens einen Buchstaben und eine Ziffer enthalten.")
+        return False
+
     return True
 
 
+def is_username_taken(usernames, username):
+    """
+    Prüft, ob der angegebene Benutzername bereits in der übergebenen Liste vorkommt.
+    usernames: Liste von Strings
+    username: zu prüfender Name
+    """
+    for name in usernames:
+        if name == username:
+            return True
+    return False
+
+
 def register_user(leaderboard, username):
-    """Fügt einen neuen Benutzer in die Leaderboard-Daten ein."""
-    leaderboard.append([username, 0, 0, 0, ""])
+    """
+    Registriert einen neuen Benutzer im Leaderboard.
+    Falls die Struktur noch nicht existiert, wird ein neuer Eintrag mit Score 0 angelegt.
+    """
+    new_entry = {
+        "username": username,
+        "score": 0,
+        "total": 0,
+        "date": ""
+    }
+    leaderboard.append(new_entry)
+    save_leaderboard(leaderboard)
     return leaderboard

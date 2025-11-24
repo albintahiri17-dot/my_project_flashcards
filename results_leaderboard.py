@@ -1,139 +1,138 @@
+# results_leaderboard.py
+# Bereich: ERGEBNISSE & LEADERBOARD
+
 import json
 import os
 from datetime import datetime
 
-LEADERBOARD_FILE = "leaderboard.json"
+DATA_FILE = "leaderboard.json"
 
 
 def load_leaderboard():
     """
-    Lädt das Leaderboard aus einer JSON-Datei.
-    Rückgabe: Liste von Einträgen oder leere Liste, wenn Datei nicht existiert.
-
-    Format pro Eintrag:
-        [username, answered_questions, correct_answers, score_percent, timestamp]
+    Lädt das Leaderboard aus der JSON-Datei.
+    Falls die Datei nicht existiert oder leer/ungültig ist, wird eine leere Liste zurückgegeben.
     """
-    if not os.path.exists(LEADERBOARD_FILE):
+    if not os.path.exists(DATA_FILE):
         return []
 
-    with open(LEADERBOARD_FILE, "r", encoding="utf-8") as f:
-        leaderboard = json.load(f)
-
-    return leaderboard
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            data = f.read().strip()
+            if data == "":
+                return []
+            return json.loads(data)
+    except (json.JSONDecodeError, OSError):
+        # Falls die Datei beschädigt ist, mit leerer Liste neu anfangen
+        return []
 
 
 def save_leaderboard(leaderboard):
+    """Speichert das Leaderboard in der JSON-Datei."""
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(leaderboard, f, indent=2, ensure_ascii=False)
+
+
+def make_summary(username, score, total, aborted):
     """
-    Speichert das Leaderboard in die JSON-Datei.
-
-    leaderboard: Liste von Einträgen (siehe load_leaderboard).
+    Erstellt eine Zusammenfassung der aktuellen Session.
+    score: Anzahl richtig beantworteter Fragen
+    total: Anzahl gestellter Fragen
+    aborted: True, falls abgebrochen wurde
     """
-    with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
-        json.dump(leaderboard, f, indent=4)
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-
-def compute_score(correct_answers, answered_questions):
-    """
-    Berechnet die Punktzahl in Prozent.
-    Rückgabe: Score als float (0.0 bis 100.0)
-    """
-    if answered_questions == 0:
-        return 0.0
-
-    score = (correct_answers * 100.0) / answered_questions
-    return score
-
-
-def end_session():
-    """
-    Gibt einen Zeitstempel für das Ende der Session zurück.
-    Format: 'YYYY-MM-DD HH:MM:SS'
-    """
-    now = datetime.now()
-    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
-    return timestamp
-
-
-def make_summary(username, answered_questions, correct_answers):
-    """
-    Erstellt einen Ergebnis-Eintrag für das Leaderboard.
-
-    Rückgabe:
-        summary = [username, answered, correct, score_percent, timestamp]
-    """
-    score = compute_score(correct_answers, answered_questions)
-    timestamp = end_session()
-
-    summary = [username, answered_questions,
-               correct_answers, round(score, 1), timestamp]
+    summary = {
+        "username": username,
+        "score": score,
+        "total": total,
+        "date": now,
+        "aborted": aborted
+    }
     return summary
 
 
 def display_summary(summary):
-    """
-    Zeigt die Ergebnisse einer Quiz-Session an.
+    """Zeigt die Zusammenfassung der aktuellen Session an."""
+    print()
+    print("=== AUSWERTUNG ===")
+    print("Benutzer:", summary["username"])
+    print("Richtige Antworten:", summary["score"], "von", summary["total"])
 
-    summary: Liste [username, answered, correct, score, timestamp]
-    """
-    username = summary[0]
-    answered = summary[1]
-    correct = summary[2]
-    score = summary[3]
-    timestamp = summary[4]
+    if summary["total"] > 0:
+        percentage = summary["score"] / summary["total"] * 100
+        print("Prozent:", f"{percentage:.1f}%")
+    else:
+        print("Keine Fragen beantwortet.")
 
-    print("\n=== Auswertung ===")
-    print("Benutzer:", username)
-    print("Beantwortete Fragen:", answered)
-    print("Richtige Antworten:", correct)
-    print("Score:", score, "%")
-    print("Zeitstempel:", timestamp)
+    if summary["aborted"]:
+        print("Hinweis: Quiz wurde vorzeitig abgebrochen.")
+
+    print("Datum:", summary["date"])
+    print("===================")
 
 
 def update_leaderboard(leaderboard, summary):
     """
-    Fügt einen neuen Eintrag zum Leaderboard hinzu.
-
-    leaderboard: Liste der bisherigen Einträge
-    summary: Eintrag der aktuellen Session
-
-    Rückgabe: aktualisierte Leaderboard-Liste
+    Aktualisiert das Leaderboard mit der aktuellen Session.
+    - Wenn der Benutzer bereits existiert, wird der Eintrag aktualisiert,
+      falls der neue Score besser ist.
+    - Andernfalls wird ein neuer Eintrag hinzugefügt.
     """
-    leaderboard.append(summary)
+    username = summary["username"]
+    score = summary["score"]
+    total = summary["total"]
+    date = summary["date"]
+
+    found = False
+    for entry in leaderboard:
+        if isinstance(entry, dict) and entry.get("username") == username:
+            found = True
+            # Falls neuer Score besser ist, aktualisieren
+            if score > entry.get("score", 0):
+                entry["score"] = score
+                entry["total"] = total
+                entry["date"] = date
+            break
+
+    if not found:
+        leaderboard.append({
+            "username": username,
+            "score": score,
+            "total": total,
+            "date": date
+        })
+
     return leaderboard
 
 
-def show_leaderboard():
-    """
-    Lädt das Leaderboard, sortiert es nach Score und zeigt die Einträge an.
-    Höchste Punktzahl zuerst.
-    """
-    leaderboard = load_leaderboard()
+def show_leaderboard(leaderboard):
+    """Zeigt das Leaderboard sortiert nach Score an."""
+    print()
+    print("=== LEADERBOARD ===")
 
-    if len(leaderboard) == 0:
-        print("\nNoch keine Einträge im Leaderboard vorhanden.")
+    # Nur gültige Einträge berücksichtigen
+    valid_entries = []
+    for entry in leaderboard:
+        if isinstance(entry, dict) and "username" in entry:
+            valid_entries.append(entry)
+
+    # Nach Score absteigend sortieren
+    valid_entries.sort(key=lambda e: e.get("score", 0), reverse=True)
+
+    if len(valid_entries) == 0:
+        print("Noch keine Einträge vorhanden.")
         return
 
-    # Sortieren nach Score (Index 3), absteigend
-    sorted_leaderboard = sorted(
-        leaderboard, key=lambda entry: entry[3], reverse=True)
-
-    print("\n=== Leaderboard ===")
-    print("Rang | Benutzer       | Score  | Richtig/Fragen | Zeitpunkt")
-    print("--------------------------------------------------------------")
+    print(f"{'Platz':<6} {'Name':<15} {'Score':<7} {'Total':<7} {'Datum':<19}")
+    print("-" * 60)
 
     rank = 1
-    for entry in sorted_leaderboard:
-        username = entry[0]
-        answered = entry[1]
-        correct = entry[2]
-        score = entry[3]
-        timestamp = entry[4]
-
+    for entry in valid_entries:
         print(
-            str(rank).ljust(4), "|",
-            username.ljust(14), "|",
-            (str(score) + "%").ljust(6), "|",
-            (str(correct) + "/" + str(answered)).ljust(15), "|",
-            timestamp
+            f"{rank:<6} {entry['username']:<15} "
+            f"{entry.get('score', 0):<7} {entry.get('total', 0):<7} {entry.get('date', ''):<19}"
         )
-        rank = rank + 1
+        rank += 1
+
+    print("===================")

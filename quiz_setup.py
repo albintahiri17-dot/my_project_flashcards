@@ -1,72 +1,57 @@
+
 import json
 
 
-def validate_chapter(user_input, available_chapters):
+def load_questions_from_json(filename="questions.json"):
     """
-    Prüft, ob die eingegebene Kapitelnummer gültig ist.
-
-    user_input: Eingabe-String vom Benutzer
-    available_chapters: Liste mit verfügbaren Kapitelnummern (z.B. [1, 2, 3])
-
-    Rückgabe:
-        - Kapitelnummer (int), wenn gültig
-        - None, wenn die Eingabe ungültig ist
+    Lädt Fragen aus einer JSON-Datei.
+    Erwartetes Format (Beispiel):
+    {
+      "Kapitel 1 – ...": [
+         { "question": "...", "options": ["1)...","2)..."], "answer": 2 },
+         ...
+      ],
+      "Kapitel 2 – ...": [ ... ]
+    }
     """
-    # Prüfen, ob überhaupt eine Zahl eingegeben wurde
-    if not user_input.isdigit():
-        return None
-
-    chapter_number = int(user_input)
-
-    # Prüfen, ob die Zahl in der Liste der verfügbaren Kapitel vorkommt
-    for c in available_chapters:
-        if c == chapter_number:
-            return chapter_number
-
-    return None
+    with open(filename, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data
 
 
 def select_chapters(available_chapters):
     """
     Lässt den Benutzer Kapitel auswählen.
+    - available_chapters: Liste der Kapitelnamen (Strings)
 
-    available_chapters: Liste der vorhandenen Kapitel (z.B. [1, 2, 3, 4])
-
-    Der Benutzer kann:
-      - eine einzelne Kapitelnummer eingeben
-      - oder 'all' schreiben, um alle Kapitel zu verwenden
-
-    Rückgabe: Liste der ausgewählten Kapitel (z.B. [1, 2])
+    Rückgabe: Liste der ausgewählten Kapitel (Strings)
     """
     print("=== Quiz-Setup: Kapitel auswählen ===")
     print("Verfügbare Kapitel:")
-    for c in available_chapters:
-        print("Kapitel", c)
 
-    choice = input(
-        "Gib eine Kapitelnummer ein (oder 'all' für alle Kapitel): ")
-    choice = choice.strip().lower()
+    for index, chapter in enumerate(available_chapters, start=1):
+        print(index, "-", chapter)
 
-    # alle Kapitel verwenden
-    if choice == "all":
+    print("Gib eine Kapitelnummer ein (oder 'all' für alle Kapitel).")
+
+    user_input = input("Deine Auswahl: ").strip().lower()
+
+    if user_input == "all":
         return available_chapters
 
-    # einzelnes Kapitel prüfen
-    chapter = validate_chapter(choice, available_chapters)
+    if user_input.isdigit():
+        choice = int(user_input)
+        if choice >= 1 and choice <= len(available_chapters):
+            return [available_chapters[choice - 1]]
 
-    if chapter is None:
-        print("Ungültige Eingabe. Es werden alle Kapitel verwendet.")
-        return available_chapters
-    else:
-        # Immer eine Liste zurückgeben
-        return [chapter]
+    print("Ungültige Eingabe. Es werden alle Kapitel verwendet.")
+    return available_chapters
 
 
 def select_question_count(max_questions):
     """
     Fragt den Benutzer, wie viele Fragen er beantworten möchte.
-
-    max_questions: maximale Anzahl vorhandener Fragen
+    max_questions: maximale Anzahl verfügbarer Fragen
 
     Rückgabe: Anzahl Fragen (int, zwischen 1 und max_questions)
     """
@@ -86,9 +71,3 @@ def select_question_count(max_questions):
             print("Bitte eine Zahl zwischen 1 und", max_questions, "eingeben.")
         else:
             return count
-
-
-def load_questions_from_json(filename):
-    """Lädt Fragen aus einer JSON-Datei."""
-    with open(filename, "r", encoding="utf-8") as f:
-        return json.load(f)
