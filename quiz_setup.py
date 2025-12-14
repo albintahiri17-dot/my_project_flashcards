@@ -1,8 +1,10 @@
+"""Es enthält alle Funktionen zur Vorbereitung des Quiz."""
+
 import json
 
 
 def load_questions_from_json(filename="questions.json"):
-
+    """Lädt alle Fragen aus einer JSON-Datei und gibt ein Dictionary zurück."""
     with open(filename, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
@@ -43,7 +45,12 @@ def select_chapters(available_chapters):
 
 
 def select_question_count(max_questions):
+    """
+    Fragt den Benutzer, wie viele Fragen er beantworten möchte.
 
+    max_questions: maximale Anzahl verfügbarer Fragen
+    Rückgabe: Anzahl Fragen (int, zwischen 1 und max_questions)
+    """
     print("\n=== Anzahl der Fragen auswählen ===")
     print("1) 10 Fragen")
     print("2) 20 Fragen")

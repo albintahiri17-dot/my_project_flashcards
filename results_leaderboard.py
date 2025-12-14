@@ -1,3 +1,5 @@
+"""Es verwaltet die Ergebnisse und das Leaderboard des Quiz-Programms."""
+
 import json
 import os
 from datetime import datetime
@@ -8,6 +10,7 @@ DATA_FILE = "leaderboard.json"
 def load_leaderboard():
     """
     Lädt das Leaderboard aus der JSON-Datei.
+
     Falls die Datei nicht existiert oder leer/ungültig ist,
     wird eine leere Liste zurückgegeben.
     """
@@ -34,6 +37,7 @@ def save_leaderboard(leaderboard):
 def make_summary(username, score, total, aborted):
     """
     Erstellt eine Zusammenfassung der aktuellen Session.
+
     score: Anzahl richtig beantworteter Fragen
     total: Anzahl gestellter Fragen
     aborted: True, falls abgebrochen wurde
@@ -73,6 +77,7 @@ def display_summary(summary):
 def update_leaderboard(leaderboard, summary):
     """
     Aktualisiert das Leaderboard mit der aktuellen Session.
+
     - Wenn der Benutzer bereits existiert, wird der Eintrag aktualisiert,
       falls der neue Score besser ist.
     - Andernfalls wird ein neuer Eintrag hinzugefügt.

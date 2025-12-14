@@ -1,4 +1,3 @@
-
 """Steuerung der Durchführung des Quiz."""
 
 import random
@@ -7,6 +6,7 @@ import random
 def shuffle_questions(questions):
     """
     Mischt die Liste der Fragen zufällig.
+
     questions: Liste von Frage-Dictionaries mit Schlüsseln:
       - "chapter"
       - "question"
@@ -18,8 +18,7 @@ def shuffle_questions(questions):
 
 
 def get_next_question(questions, index):
-    """
-    Gibt die nächste Frage aus der Liste zurück.
+    """Gibt die nächste Frage aus der Liste zurück.
 
     questions: Liste der Fragen
     index: aktuelle Position (int)
@@ -37,8 +36,8 @@ def get_next_question(questions, index):
 
 
 def present_question(question, question_number, total_questions):
-    """
-    Zeigt eine Frage mit Antwortoptionen an.
+    """Zeigt eine Frage mit Antwortoptionen an.
+
     question: Dictionary mit 'chapter', 'question', 'options'
     """
     print()
@@ -54,10 +53,10 @@ def present_question(question, question_number, total_questions):
 
 
 def get_valid_answer(max_option_count):
-    """
-    Fragt den Benutzer so lange nach einer Antwort,
-    bis er eine gültige Zahl zwischen 1 und max_option_count eingibt
-    oder 'q' zum Abbrechen benutzt.
+    """Fragt den Benutzer nach einer gültigen Antwort.
+
+    Der Benutzer gibt eine Zahl zwischen 1 und max_option_count ein oder
+    bricht mit 'q' ab.
     """
     while True:
         user_input = input("Deine Eingabe: ").strip()
@@ -84,8 +83,8 @@ def get_valid_answer(max_option_count):
 
 
 def check_answer(question, answer_number):
-    """
-    Prüft, ob die gegebene Antwortnummer korrekt ist.
+    """Prüft, ob die gegebene Antwortnummer korrekt ist.
+
     question: Dictionary mit 'answer' (int)
     answer_number: vom Benutzer eingegebene Zahl (int)
 
@@ -103,8 +102,8 @@ def give_feedback(is_correct):
 
 
 def handle_quitting(user_input):
-    """
-    Prüft, ob der Benutzer das Quiz abbrechen möchte.
+    """Prüft, ob der Benutzer das Quiz abbrechen möchte.
+
     user_input: Eingabe-String
 
     Rückgabe: True, wenn abgebrochen werden soll, sonst False.
