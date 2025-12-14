@@ -1,4 +1,6 @@
 
+"""Steuerung der Durchführung des Quiz."""
+
 import random
 
 
