@@ -9,27 +9,37 @@ def load_questions_from_json(filename="questions.json"):
 
 
 def select_chapters(available_chapters):
+    """
+    Lässt den Benutzer Kapitel auswählen.
 
+    Erlaubt:
+    - 'all' für alle Kapitel
+    - eine Zahl zwischen 1 und Anzahl Kapitel
+
+    Wiederholt die Eingabe so lange, bis sie gültig ist.
+    """
     print("=== Quiz-Setup: Kapitel auswählen ===")
     print("Verfügbare Kapitel:")
 
     for index, chapter in enumerate(available_chapters, start=1):
         print(index, "-", chapter)
 
-    print("Gib eine Kapitelnummer ein (oder 'all' für alle Kapitel).")
+    while True:
+        print("Gib eine Kapitelnummer ein (oder 'all' für alle Kapitel).")
+        user_input = input("Deine Auswahl: ").strip().lower()
 
-    user_input = input("Deine Auswahl: ").strip().lower()
+        if user_input == "all":
+            return available_chapters
 
-    if user_input == "all":
-        return available_chapters
+        if user_input.isdigit():
+            choice = int(user_input)
+            if 1 <= choice <= len(available_chapters):
+                return [available_chapters[choice - 1]]
 
-    if user_input.isdigit():
-        choice = int(user_input)
-        if choice >= 1 and choice <= len(available_chapters):
-            return [available_chapters[choice - 1]]
-
-    print("Ungültige Eingabe. Es werden alle Kapitel verwendet.")
-    return available_chapters
+        print(
+            "❗ Ungültige Eingabe. Bitte gib eine Zahl zwischen 1 und "
+            f"{len(available_chapters)} ein oder 'all'."
+        )
 
 
 def select_question_count(max_questions):
