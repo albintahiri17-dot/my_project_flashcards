@@ -1,31 +1,15 @@
-
 import json
 
 
 def load_questions_from_json(filename="questions.json"):
-    """
-    Lädt Fragen aus einer JSON-Datei.
-    Erwartetes Format (Beispiel):
-    {
-      "Kapitel 1 – ...": [
-         { "question": "...", "options": ["1)...","2)..."], "answer": 2 },
-         ...
-      ],
-      "Kapitel 2 – ...": [ ... ]
-    }
-    """
+
     with open(filename, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
 
 
 def select_chapters(available_chapters):
-    """
-    Lässt den Benutzer Kapitel auswählen.
-    - available_chapters: Liste der Kapitelnamen (Strings)
 
-    Rückgabe: Liste der ausgewählten Kapitel (Strings)
-    """
     print("=== Quiz-Setup: Kapitel auswählen ===")
     print("Verfügbare Kapitel:")
 
@@ -49,25 +33,27 @@ def select_chapters(available_chapters):
 
 
 def select_question_count(max_questions):
-    """
-    Fragt den Benutzer, wie viele Fragen er beantworten möchte.
-    max_questions: maximale Anzahl verfügbarer Fragen
 
-    Rückgabe: Anzahl Fragen (int, zwischen 1 und max_questions)
-    """
-    print("Für deine Auswahl stehen", max_questions, "Fragen zur Verfügung.")
+    print("\n=== Anzahl der Fragen auswählen ===")
+    print("1) 10 Fragen")
+    print("2) 20 Fragen")
+    print("3) 30 Fragen")
+
+    valid_choices = {"1": 10, "2": 20, "3": 30}
 
     while True:
-        user_input = input("Wie viele Fragen möchtest du beantworten? ")
-        user_input = user_input.strip()
+        user_input = input("Bitte wähle 1, 2 oder 3: ").strip()
 
-        if not user_input.isdigit():
-            print("Bitte gib eine Zahl ein.")
+        if user_input not in valid_choices:
+            print("❗ Ungültige Eingabe. Bitte 1, 2 oder 3 eingeben.")
             continue
 
-        count = int(user_input)
+        chosen_amount = valid_choices[user_input]
 
-        if count < 1 or count > max_questions:
-            print("Bitte eine Zahl zwischen 1 und", max_questions, "eingeben.")
-        else:
-            return count
+        # Falls der User mehr Fragen wählt als verfügbar:
+        if chosen_amount > max_questions:
+            print(f"⚠️  Es sind nur {max_questions} Fragen verfügbar. "
+                  f"Es werden {max_questions} Fragen gestellt.")
+            return max_questions
+
+        return chosen_amount

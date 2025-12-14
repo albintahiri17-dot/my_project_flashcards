@@ -1,6 +1,3 @@
-# results_leaderboard.py
-# Bereich: ERGEBNISSE & LEADERBOARD
-
 import json
 import os
 from datetime import datetime
@@ -11,7 +8,8 @@ DATA_FILE = "leaderboard.json"
 def load_leaderboard():
     """
     Lädt das Leaderboard aus der JSON-Datei.
-    Falls die Datei nicht existiert oder leer/ungültig ist, wird eine leere Liste zurückgegeben.
+    Falls die Datei nicht existiert oder leer/ungültig ist,
+    wird eine leere Liste zurückgegeben.
     """
     if not os.path.exists(DATA_FILE):
         return []
@@ -130,8 +128,11 @@ def show_leaderboard(leaderboard):
     rank = 1
     for entry in valid_entries:
         print(
-            f"{rank:<6} {entry['username']:<15} "
-            f"{entry.get('score', 0):<7} {entry.get('total', 0):<7} {entry.get('date', ''):<19}"
+            f"{rank:<6} "
+            f"{entry['username']:<15} "
+            f"{entry.get('score', 0):<7} "
+            f"{entry.get('total', 0):<7} "
+            f"{entry.get('date', ''):<19}"
         )
         rank += 1
 

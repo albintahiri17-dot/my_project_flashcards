@@ -1,10 +1,9 @@
-
 import json
 from results_leaderboard import load_leaderboard, save_leaderboard
 
 
 def prompt_username():
-    """Fragt den Benutzer nach einem Benutzernamen."""
+
     username = input(
         "Bitte gib deinen Benutzernamen ein.\n"
         "Er sollte aus Buchstaben und mindestens einer Ziffer bestehen\n"
@@ -43,7 +42,8 @@ def validate_username(username):
 
     if not has_letter or not has_digit:
         print(
-            "⚠️  Benutzername muss mindestens einen Buchstaben und eine Ziffer enthalten.")
+            "⚠️  Benutzername muss mindestens einen"
+            " Buchstaben und eine Ziffer enthalten.")
         return False
 
     return True
@@ -51,7 +51,8 @@ def validate_username(username):
 
 def is_username_taken(usernames, username):
     """
-    Prüft, ob der angegebene Benutzername bereits in der übergebenen Liste vorkommt.
+    Prüft, ob der angegebene Benutzername
+    bereits in der übergebenen Liste vorkommt.
     usernames: Liste von Strings
     username: zu prüfender Name
     """
@@ -64,7 +65,8 @@ def is_username_taken(usernames, username):
 def register_user(leaderboard, username):
     """
     Registriert einen neuen Benutzer im Leaderboard.
-    Falls die Struktur noch nicht existiert, wird ein neuer Eintrag mit Score 0 angelegt.
+    Falls die Struktur noch nicht existiert,
+    wird ein neuer Eintrag mit Score 0 angelegt.
     """
     new_entry = {
         "username": username,

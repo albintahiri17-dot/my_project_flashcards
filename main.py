@@ -1,4 +1,3 @@
-
 from username_setup import (
     prompt_username,
     is_username_taken,
@@ -16,6 +15,7 @@ from quiz_run import (
     shuffle_questions,
     get_next_question,
     present_question,
+    get_valid_answer,
     check_answer,
     give_feedback,
     handle_quitting,
@@ -34,18 +34,13 @@ from results_leaderboard import (
 def main():
     print("=== Willkommen zum Flashcards-Quiz ===")
 
-    # -----------------------------------
-    # 1) BENUTZERVERWALTUNG
-    # -----------------------------------
     leaderboard = load_leaderboard()
 
-    # vorhandene Usernamen aus dem Leaderboard extrahieren
     usernames = []
     for entry in leaderboard:
         if isinstance(entry, dict) and "username" in entry:
             usernames.append(entry["username"])
 
-    # gültigen Benutzer abfragen
     while True:
         username = prompt_username()
 
@@ -62,18 +57,14 @@ def main():
             usernames.append(username)
             break
 
-    # -----------------------------------
-    # 2) FRAGEN LADEN
-    # -----------------------------------
     questions_by_chapter = load_questions_from_json("questions.json")
 
     # Kapitel-Liste aus dem JSON erzeugen
     available_chapters = list(questions_by_chapter.keys())
     available_chapters.sort()
 
-    # -----------------------------------
-    # 3) QUIZ-SETUP
-    # -----------------------------------
+    # 3)
+
     selected_chapters = select_chapters(available_chapters)
 
     # Ausgewählte Fragen in eine flache Liste umwandeln
@@ -100,9 +91,8 @@ def main():
     selected_questions = shuffle_questions(selected_questions)
     selected_questions = selected_questions[:num_to_ask]
 
-    # -----------------------------------
     # 4) DURCHFÜHRUNG DES QUIZ
-    # -----------------------------------
+
     index = 0
     num_correct = 0
     asked = 0
@@ -111,33 +101,27 @@ def main():
     while True:
         question, index = get_next_question(selected_questions, index)
         if question is None:
-            break  # keine weitere Frage
+            break
 
         asked += 1
         present_question(question, asked, len(selected_questions))
 
-        user_input = input("Deine Eingabe: ").strip()
+        user_answer = get_valid_answer(len(question["options"]))
 
-        # Abbruch prüfen
-        if handle_quitting(user_input):
+        if user_answer == "q":
             aborted = True
             break
 
-        # Eingabe prüfen
-        if not user_input.isdigit():
-            print("Bitte eine gültige Zahl eingeben.")
-            continue
+        is_correct = check_answer(question, user_answer)
+        give_feedback(is_correct)
 
-        answer_number = int(user_input)
-        is_correct = check_answer(question, answer_number)
         if is_correct:
             num_correct += 1
 
-        give_feedback(is_correct)
+    get_valid_answer,
 
-    # -----------------------------------
     # 5) ERGEBNIS & LEADERBOARD
-    # -----------------------------------
+
     summary = make_summary(username, num_correct, asked, aborted)
     display_summary(summary)
 
