@@ -1,4 +1,4 @@
-"""Es verwaltet die Ergebnisse und das Leaderboard des Quiz-Programms."""
+"""Verwaltung der Ergebnisse und des Leaderboards des Quiz-Programms."""
 
 import json
 import os

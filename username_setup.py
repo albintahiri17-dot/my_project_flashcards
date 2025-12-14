@@ -1,4 +1,4 @@
-"""Es enthält Funktionen zur Benutzerverwaltung des Quiz-Programms."""
+"""Enthält Funktionen zur Benutzerverwaltung des Quiz-Programms."""
 import json
 from results_leaderboard import load_leaderboard, save_leaderboard
 

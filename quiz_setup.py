@@ -1,4 +1,4 @@
-"""Es enthält alle Funktionen zur Vorbereitung des Quiz."""
+"""Enthält alle Funktionen zur Vorbereitung des Quiz."""
 
 import json
 
