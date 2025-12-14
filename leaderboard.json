@@ -8,9 +8,9 @@
   ],
   {
     "username": "Amir4",
-    "score": 7,
-    "total": 10,
-    "date": "2025-12-14 14:20:35"
+    "score": 9,
+    "total": 30,
+    "date": "2025-12-14 15:21:23"
   },
   {
     "username": "Amir5",
@@ -23,5 +23,17 @@
     "score": 16,
     "total": 30,
     "date": "2025-12-06 08:25:41"
+  },
+  {
+    "username": "AMIR4",
+    "score": 1,
+    "total": 5,
+    "date": "2025-12-14 15:47:08"
+  },
+  {
+    "username": "*asdf3",
+    "score": 0,
+    "total": 0,
+    "date": ""
   }
 ]

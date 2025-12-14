@@ -60,7 +60,6 @@ def select_question_count(max_questions):
 
         chosen_amount = valid_choices[user_input]
 
-        # Falls der User mehr Fragen wählt als verfügbar:
         if chosen_amount > max_questions:
             print(f"⚠️  Es sind nur {max_questions} Fragen verfügbar. "
                   f"Es werden {max_questions} Fragen gestellt.")

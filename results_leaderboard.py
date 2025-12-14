@@ -21,7 +21,7 @@ def load_leaderboard():
                 return []
             return json.loads(data)
     except (json.JSONDecodeError, OSError):
-        # Falls die Datei beschädigt ist, mit leerer Liste neu anfangen
+
         return []
 
 
@@ -86,7 +86,7 @@ def update_leaderboard(leaderboard, summary):
     for entry in leaderboard:
         if isinstance(entry, dict) and entry.get("username") == username:
             found = True
-            # Falls neuer Score besser ist, aktualisieren
+
             if score > entry.get("score", 0):
                 entry["score"] = score
                 entry["total"] = total
@@ -109,13 +109,11 @@ def show_leaderboard(leaderboard):
     print()
     print("=== LEADERBOARD ===")
 
-    # Nur gültige Einträge berücksichtigen
     valid_entries = []
     for entry in leaderboard:
         if isinstance(entry, dict) and "username" in entry:
             valid_entries.append(entry)
 
-    # Nach Score absteigend sortieren
     valid_entries.sort(key=lambda e: e.get("score", 0), reverse=True)
 
     if len(valid_entries) == 0:

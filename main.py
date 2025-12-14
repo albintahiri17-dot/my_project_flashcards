@@ -1,3 +1,5 @@
+"""Haupteinstiegspunkt des Quiz-Programms."""
+
 from username_setup import (
     prompt_username,
     is_username_taken,
@@ -32,6 +34,13 @@ from results_leaderboard import (
 
 
 def main():
+    """
+    Startet das Flashcards-Quiz und steuert den gesamten Programmablauf.
+
+    Die Funktion kümmert sich um die Benutzeranmeldung,
+    lädt das Leaderboard, initialisiert das Quiz und startet
+    anschließend die Quiz-Durchführung.
+    """
     print("=== Willkommen zum Flashcards-Quiz ===")
 
     leaderboard = load_leaderboard()
@@ -59,15 +68,13 @@ def main():
 
     questions_by_chapter = load_questions_from_json("questions.json")
 
-    # Kapitel-Liste aus dem JSON erzeugen
     available_chapters = list(questions_by_chapter.keys())
     available_chapters.sort()
 
-    # 3)
+    # 3) EINSTELLUNG DES QUIZ
 
     selected_chapters = select_chapters(available_chapters)
 
-    # Ausgewählte Fragen in eine flache Liste umwandeln
     selected_questions = []
     for chapter in selected_chapters:
         question_list = questions_by_chapter.get(chapter, [])
@@ -87,7 +94,6 @@ def main():
     max_questions = len(selected_questions)
     num_to_ask = select_question_count(max_questions)
 
-    # Fragen mischen und auf gewünschte Anzahl kürzen
     selected_questions = shuffle_questions(selected_questions)
     selected_questions = selected_questions[:num_to_ask]
 
