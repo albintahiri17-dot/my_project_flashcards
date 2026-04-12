@@ -282,7 +282,7 @@ Die im Terminal angezeigte URL öffnen (Standard: `http://localhost:8080`).
 
 ## 🧪 Tests
 
-> 🚧 Tests werden im Verlauf der Entwicklung hinzugefügt.
+-----
 
 Geplante Testabdeckung:
 - **Unit-Tests:** Benutzernamen-Validierung, Punkteberechnung, Kapitel- und Fragenauswahl
@@ -299,7 +299,6 @@ Geplante Testabdeckung:
 | Albin Tahiri | 🚧 |
 | Amir Muliqi | 🚧 |
 
-> Die Beiträge werden anhand der GitHub-Commits überprüft. Alle Teammitglieder müssen direkt Code beitragen.
 
 ---
 
