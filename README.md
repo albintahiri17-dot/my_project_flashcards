@@ -141,6 +141,10 @@ FlashcardsPP ist eine digitale Quiz-Applikation, die das Lernen mit Karteikarten
 
 ---
 
+## UML Klassen-Diagramm
+
+![alt text](<UML Class Diagramm.png>)
+
 ## 🗄️ Datenbank und ORM
 
 Die Applikation verwendet **SQLAlchemy** mit einer **SQLite**-Datenbank.
